@@ -4,7 +4,6 @@
 
 ### *Where Talent Meets Opportunity, Enhanced by Intelligence*
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://reactjs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
@@ -34,7 +33,6 @@
 - [🐛 Troubleshooting](#-troubleshooting)
 - [🚧 Known Issues](#-known-issues)
 - [🤝 Future Work & Collaboration](#-future-work--collaboration)
-- [📄 License](#-license)
 
 ---
 
@@ -48,20 +46,24 @@ A **next-generation job portal** that bridges the gap between job seekers and em
 graph LR
     A[👤 Job Seekers] -->|Apply| B[🤖 AI Portal]
     C[🏢 Employers] -->|Post Jobs| B
-    B -->|AI Analysis| D[📊 Smart Matching]
-    B -->|Real-time| E[💬 Chat]
-    D -->|Insights| A
-    D -->|Quality Candidates| C
+    B -->|Search & Filter| D[🔍 Smart Search]
+    B -->|Real-time| E[💬 Direct Chat]
+    D -->|Browse Jobs| A
+    D -->|Find Candidates| C
+    B -->|AI Insights| A
+    B -->|Quality Applications| C
+    A <-->|Message| E
+    E <-->|Message| C
 ```
 
 <div align="center">
 
 | For Job Seekers | For Employers | AI Features |
 |:---------------:|:-------------:|:-----------:|
-| 🔍 Smart Search | 📝 Easy Posting | 🧠 Resume Analysis |
+| 🔍 Advanced Search & Filters | 📝 Easy Posting | 🧠 Resume Analysis |
 | 📄 Profile Builder | 📊 Analytics | ✍️ Cover Letter Gen |
 | 💬 Real-time Chat | 👥 Applicant Management | 🎯 Interview Prep |
-| 🎓 Skill Tracking | 🔔 Notifications | 📈 Smart Matching |
+| 🎓 Skill Tracking | 🔔 Notifications | 💡 Smart Insights |
 
 </div>
 
@@ -93,6 +95,7 @@ graph LR
   
 - **💬 Communication**
   - Real-time messaging with employers
+  - Direct chat with hiring managers
   - Typing indicators
   - Unread message notifications
   - Message threading
@@ -134,8 +137,9 @@ graph LR
   - Candidate pipeline visualization
   
 - **💬 Engagement**
-  - Direct messaging with candidates
-  - Real-time communication
+  - Direct messaging with job seekers
+  - Real-time communication with candidates
+  - Interview coordination
   - Professional networking
 
 </details>
@@ -171,42 +175,33 @@ Primary AI → Secondary AI → Template-based Fallback
 
 ### System Design
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                         │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  React SPA (Port 3000)                              │   │
-│  │  • React Router • Context API • Socket.IO Client    │   │
-│  │  • Axios • Framer Motion • React Hot Toast          │   │
-│  └─────────────────────────────────────────────────────┘   │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                    HTTP/WS │
-                         │
-┌────────────────────────▼────────────────────────────────────┐
-│                      API GATEWAY                            │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  Express Server (Port 5000)                         │   │
-│  │  • JWT Auth • REST API • Socket.IO Server           │   │
-│  └─────────────────────────────────────────────────────┘   │
-└────────┬──────────────────┬──────────────────┬──────────────┘
-         │                  │                  │
-    ┌────▼────┐      ┌─────▼──────┐    ┌─────▼──────┐
-    │  Auth   │      │  Business  │    │  Real-time │
-    │ Service │      │   Logic    │    │  Messages  │
-    └────┬────┘      └─────┬──────┘    └─────┬──────┘
-         │                 │                  │
-         └────────┬────────┴──────────────────┘
-                  │
-         ┌────────▼────────┐
-         │   Data Layer    │
-         │  MongoDB Atlas  │
-         │  • Users        │
-         │  • Jobs         │
-         │  • Applications │
-         │  • Messages     │
-         │  • Experiences  │
-         └─────────────────┘
+```mermaid
+graph TB
+    subgraph Client["CLIENT LAYER"]
+        React["React SPA (Port 3000)<br/>React Router | Context API | Socket.IO Client<br/>Axios | Framer Motion | React Hot Toast"]
+    end
+    
+    subgraph API["API GATEWAY"]
+        Express["Express Server (Port 5000)<br/>JWT Auth | REST API | Socket.IO Server"]
+    end
+    
+    subgraph Services["SERVICE LAYER"]
+        Auth["Auth Service"]
+        Business["Business Logic"]
+        Realtime["Real-time Messages"]
+    end
+    
+    subgraph Data["DATA LAYER"]
+        MongoDB["MongoDB Atlas<br/>Users | Jobs | Applications<br/>Messages | Experiences"]
+    end
+    
+    React -->|HTTP/WebSocket| Express
+    Express --> Auth
+    Express --> Business
+    Express --> Realtime
+    Auth --> MongoDB
+    Business --> MongoDB
+    Realtime --> MongoDB
 ```
 
 ### Authentication Flow
@@ -242,25 +237,25 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant S as Sender
+    participant JS as Job Seeker
     participant WS as Socket.IO Server
     participant DB as MongoDB
-    participant R as Receiver
+    participant E as Employer
 
-    S->>WS: Connect with userId
+    JS->>WS: Connect with userId
     WS->>WS: Store socket mapping
-    R->>WS: Connect with userId
+    E->>WS: Connect with userId
     WS->>WS: Store socket mapping
     
-    S->>WS: Send Message
+    JS->>WS: Send Message to Employer
     WS->>DB: Save Message
     DB-->>WS: Confirmation
-    WS->>R: Emit message:receive
-    WS->>S: Emit message:sent
+    WS->>E: Emit message:receive
+    WS->>JS: Emit message:sent
     
-    R->>WS: Mark as Read
+    E->>WS: Mark as Read
     WS->>DB: Update Message
-    WS->>S: Update Read Status
+    WS->>JS: Update Read Status
 ```
 
 ---
@@ -1164,75 +1159,6 @@ socket.on('error', (error) => {
 
 ---
 
-## 🎨 UI Preview
-
-### Landing Page
-```
-┌─────────────────────────────────────────────────┐
-│  🚀 Job Portal AI           Login | Sign Up     │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│          Find Your Dream Job                    │
-│          Powered by Artificial Intelligence     │
-│                                                 │
-│          [Search Jobs...]      [🔍]             │
-│                                                 │
-│    ┌─────────┐  ┌─────────┐  ┌─────────┐      │
-│    │ 🤖 AI   │  │ 💬 Chat │  │ 📊 Track │      │
-│    │ Tools   │  │ Real    │  │ Apps    │      │
-│    └─────────┘  └─────────┘  └─────────┘      │
-└─────────────────────────────────────────────────┘
-```
-
-### Job Seeker Dashboard
-```
-┌─────────────────────────────────────────────────┐
-│  Dashboard | Jobs | Applications | Messages     │
-├─────────────────────────────────────────────────┤
-│  Welcome back, John! 👋                         │
-│                                                 │
-│  📊 Quick Stats                                 │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐       │
-│  │ 12 Apps  │ │ 3 Pending│ │ 5 Messages│      │
-│  └──────────┘ └──────────┘ └──────────┘       │
-│                                                 │
-│  🔥 Recommended Jobs                            │
-│  ┌───────────────────────────────────────┐    │
-│  │ Senior Developer @ Tech Corp          │    │
-│  │ 💰 $100k-$150k | 📍 Remote            │    │
-│  │ [Apply Now]                    [❤️]   │    │
-│  └───────────────────────────────────────┘    │
-└─────────────────────────────────────────────────┘
-```
-
-### AI Resume Analyzer
-```
-┌─────────────────────────────────────────────────┐
-│  🤖 AI Resume Analyzer                          │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│  Upload Resume or Paste Text                    │
-│  ┌─────────────────────────────────────┐       │
-│  │ [📄 Upload PDF]  [📝 Paste Text]    │       │
-│  └─────────────────────────────────────┘       │
-│                                                 │
-│  ✅ Analysis Results                            │
-│  ┌─────────────────────────────────────┐       │
-│  │ Overall Score: 85/100 ⭐⭐⭐⭐        │       │
-│  │                                     │       │
-│  │ ✅ Strengths:                       │       │
-│  │ • Strong technical skills           │       │
-│  │ • Clear career progression          │       │
-│  │                                     │       │
-│  │ 💡 Improvements:                    │       │
-│  │ • Add more metrics                  │       │
-│  │ • Highlight leadership              │       │
-│  └─────────────────────────────────────┘       │
-└─────────────────────────────────────────────────┘
-```
-
----
-
 ## 🧪 Testing
 
 ### Running Tests
@@ -1551,39 +1477,8 @@ We welcome contributions! Here's how you can help:
 
 ### 📧 Contact
 
-- **Email:** your-email@example.com
-- **LinkedIn:** [Your Profile](https://linkedin.com/in/yourprofile)
-- **Twitter:** [@yourhandle](https://twitter.com/yourhandle)
+- **Email:** prabhleen6003@gmail.com
 
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
-```
-MIT License
-
-Copyright (c) 2024 Your Name
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
 
 ---
 
@@ -1593,7 +1488,7 @@ SOFTWARE.
 
 If you find this project useful, please consider giving it a star ⭐
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by [Prabhleen Kaur]
 
 [⬆ Back to Top](#-ai-powered-job-portal)
 
