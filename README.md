@@ -363,6 +363,6 @@ If you are interested in collaborating on these features, contributions and idea
 
 For additional setup notes, see:
 - `COMPLETE_SETUP.md`
-- `GEMINI_SETUP.md`
+- `API_SETUP.md`
 
 
