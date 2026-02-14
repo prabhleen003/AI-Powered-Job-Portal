@@ -1,262 +1,185 @@
-# 🚀 COMPLETE JOB PORTAL - ALL PHASES INTEGRATED
+# Complete Setup Lookup
 
-## ✅ What's Included - ALL 6 PHASES!
+This document is a practical reference to run the full project locally:
+- `frontend` (React)
+- `backend` (Node.js + Express + MongoDB + Socket.IO)
 
-### Phase 1: ✅ Project Setup & Database
-- MongoDB models (User, Job, Application, Message)
-- Express server configured
-- Database connection
+Use this when you need commands, environment variables, URLs, and quick troubleshooting in one place.
 
-### Phase 2: ✅ Authentication System  
-- JWT authentication middleware
-- Google OAuth integration
-- Login/Register pages with beautiful UI
-- Password encryption with bcryptjs
-- Auth context for React
+## 1. Prerequisites
 
-### Phase 3: ✅ Core Job Features
-- Job posting API (employers)
-- Job search with advanced filters
-- Jobs listing page with pagination
-- Job details page
-- Category, location, salary filters
+- Node.js `18+`
+- npm `9+`
+- MongoDB (local or Atlas)
 
-### Phase 4: ✅ User Dashboard
-- Applications tracking
-- Status updates (pending → reviewing → interview → offered/rejected)
-- Application management
-- Profile management
+Check versions:
 
-### Phase 5: ✅ Messaging System
-- User-to-user messaging
-- Thread-based conversations
-- Read/unread status
-- Messages inbox
+```bash
+node -v
+npm -v
+```
 
-### Phase 6: ✅ Final Polish
-- Beautiful purple/white theme
-- Framer Motion animations
-- Responsive design (mobile, tablet, desktop)
-- Loading states
-- Error handling
+## 2. Project Structure
 
-## 🎨 Design Features
+```text
+job-portal-full/
+  backend/
+  frontend/
+  README.md
+  COMPLETE_SETUP.md
+  API_KEY_SETUP.md
+```
 
-- **Purple Gradient Theme** (#7C3AED → #EC4899)
-- **Modern Fonts**: Archivo (headings) + DM Sans (body)
-- **Smooth Animations**: Page transitions, hover effects
-- **Glassmorphism**: Modern frosted glass effects
-- **Responsive**: Works on all devices
+## 3. Environment Variables
 
-## 📦 Quick Installation
+Create `backend/.env`:
 
-### 1. Backend Setup
+```env
+MONGO_URI=mongodb://localhost:27017/job-portal
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+JWT_SECRET=replace_with_a_long_random_secret
+SESSION_SECRET=replace_with_a_long_random_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
+```
+
+Create `frontend/.env`:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+Notes:
+- `MONGO_URI`, `JWT_SECRET`, `SESSION_SECRET` are required.
+- `GOOGLE_*` is required only for Google OAuth login.
+- `GEMINI_API_KEY` and `GROQ_API_KEY` are optional but recommended for best AI output.
+
+## 4. Install Dependencies
+
+Backend:
 
 ```bash
 cd backend
 npm install
 ```
 
-Create `.env` file:
-```env
-MONGO_URI=mongodb://localhost:27017/job-portal
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:3000
-JWT_SECRET=your_jwt_secret_key_minimum_32_characters_long
-SESSION_SECRET=your_session_secret_key_here
-GOOGLE_CLIENT_ID=your_google_oauth_client_id
-GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
-```
-
-Start backend:
-```bash
-npm run dev
-```
-
-### 2. Frontend Setup
+Frontend:
 
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
-Create `.env` file in frontend:
-```env
-REACT_APP_API_URL=http://localhost:5000/api
+## 5. Run the App
+
+Terminal 1 (backend):
+
+```bash
+cd backend
+npm run dev
 ```
 
-Start frontend:
+Terminal 2 (frontend):
+
 ```bash
+cd frontend
 npm start
 ```
 
-## 🌐 Access the App
+Default URLs:
+- Frontend: `http://localhost:3000`
+- API: `http://localhost:5000/api`
+- Socket server: `http://localhost:5000`
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000/api
+## 6. Feature Provider Lookup (AI)
 
-## 📋 API Endpoints
+The app uses provider fallback chains:
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/google` - Google OAuth
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/logout` - Logout
+- Resume analysis: `Gemini -> Groq -> Template`
+- Cover letter generation: `Groq -> Gemini -> Template`
+- Practice test generation/evaluation: `Groq -> Gemini -> Template`
 
-### Jobs
-- `GET /api/jobs` - Get all jobs (with filters)
-- `GET /api/jobs/:id` - Get single job
-- `POST /api/jobs` - Create job (employer only)
-- `PUT /api/jobs/:id` - Update job
-- `DELETE /api/jobs/:id` - Delete job
+If both API keys are missing or providers fail, template-based fallback still returns output.
 
-### Applications
-- `POST /api/applications` - Apply to job
-- `GET /api/applications` - Get user applications
-- `GET /api/applications/:id` - Get single application
-- `PUT /api/applications/:id/status` - Update status (employer)
-- `PUT /api/applications/:id/withdraw` - Withdraw application
+## 7. Commands Cheat Sheet
 
-### Messages
-- `POST /api/messages` - Send message
-- `GET /api/messages` - Get all messages
-- `GET /api/messages/unread` - Get unread count
-- `GET /api/messages/thread/:id` - Get thread messages
-- `PUT /api/messages/:id/read` - Mark as read
-- `DELETE /api/messages/:id` - Delete message
+Backend:
 
-## 🔑 Features Breakdown
-
-### For Job Seekers:
-- ✅ Search jobs with filters
-- ✅ Apply to jobs
-- ✅ Track application status
-- ✅ Message employers
-- ✅ Manage profile
-
-### For Employers:
-- ✅ Post jobs
-- ✅ Manage job listings
-- ✅ Review applications
-- ✅ Update application status
-- ✅ Message candidates
-
-## 🎯 User Roles
-
-1. **Job Seeker**
-   - Browse and search jobs
-   - Apply to positions
-   - Track applications
-   - Receive messages
-
-2. **Employer**
-   - Post job listings
-   - Manage postings
-   - Review applications
-   - Update candidate status
-
-## 🗄️ Database Models
-
-### User
-- name, email, password
-- role (jobseeker/employer)
-- profile (avatar, resume, skills, experience)
-- company info (for employers)
-
-### Job
-- title, description, requirements
-- location, salary, employment type
-- category, skills
-- employer reference
-
-### Application
-- job & user references
-- cover letter, resume
-- status tracking
-- timeline
-
-### Message
-- sender & receiver
-- subject, content
-- thread support
-- read status
-
-## 🚀 Next Steps
-
-1. **Get Google OAuth Credentials**:
-   - Go to Google Cloud Console
-   - Create OAuth 2.0 credentials
-   - Add to `.env` file
-
-2. **Setup MongoDB**:
-   - Install MongoDB locally OR
-   - Use MongoDB Atlas (cloud)
-   - Update MONGO_URI in `.env`
-
-3. **Customize**:
-   - Change theme colors in `index.css`
-   - Update company info
-   - Add your logo
-
-## 🎨 Customization Guide
-
-### Change Theme Colors
-Edit `/frontend/src/index.css`:
-```css
-:root {
-  --primary: #7C3AED;  /* Your primary color */
-  --accent: #EC4899;   /* Your accent color */
-}
+```bash
+cd backend
+npm run dev
+npm start
 ```
 
-### Update Fonts
-Edit `/frontend/src/index.css`:
-```css
-@import url('your-google-fonts-url');
+Frontend:
 
-:root {
-  --font-heading: 'YourFont', sans-serif;
-  --font-body: 'YourFont', sans-serif;
-}
+```bash
+cd frontend
+npm start
+npm run build
+npm test
 ```
 
-## 🐛 Troubleshooting
+## 8. API Quick Lookup
 
-**MongoDB Connection Error?**
-- Ensure MongoDB is running
-- Check MONGO_URI format
-- Use MongoDB Atlas for cloud database
+Base URL: `http://localhost:5000/api`
 
-**Google OAuth Not Working?**
-- Verify client ID and secret
-- Check callback URL matches Google Console
-- Ensure credentials are in `.env`
+- Health: `GET /api`
+- Auth: `/auth/*`
+- Jobs: `/jobs/*`
+- Applications: `/applications/*`
+- Messages: `/messages/*`
+- Resume AI: `/resume/*`
+- Cover Letter AI: `/cover-letter/*`
+- Practice Test AI: `/practice-test/*`
+- Experiences: `/experiences/*`
 
-**CORS Errors?**
-- Verify CLIENT_URL in backend `.env`
-- Check API_URL in frontend `.env`
+Full endpoint list is in `README.md`.
 
-**Port Already in Use?**
-- Change PORT in `.env`
-- Kill process using the port
+## 9. First-Run Verification Checklist
 
-## 📱 Responsive Breakpoints
+1. Backend starts without MongoDB connection errors.
+2. Frontend loads at `http://localhost:3000`.
+3. `GET http://localhost:5000/api` responds.
+4. Register and login work.
+5. Jobs list loads.
+6. At least one AI feature runs (resume or cover letter).
 
-- Mobile: < 640px
-- Tablet: 640px - 1024px
-- Desktop: > 1024px
+## 10. Common Issues
 
-## 🎉 You're All Set!
+MongoDB connection fails:
+- Confirm `MONGO_URI`.
+- If Atlas is used, allow your IP in Atlas network access.
 
-Your complete job portal is ready to use with:
-- ✅ Authentication (Google + Email)
-- ✅ Job posting & searching
-- ✅ Application tracking
-- ✅ Messaging system
-- ✅ Beautiful UI with animations
-- ✅ Fully responsive
+CORS/auth token errors:
+- Confirm `CLIENT_URL` in `backend/.env`.
+- Confirm `REACT_APP_API_URL` in `frontend/.env`.
 
-**Enjoy building!** 🚀
+Google OAuth callback errors:
+- Ensure callback URL in Google Console exactly matches:
+  `http://localhost:5000/api/auth/google/callback`
+
+AI provider errors:
+- Confirm `GEMINI_API_KEY` and/or `GROQ_API_KEY` in `backend/.env`.
+- Restart backend after changing env values.
+- If rate-limited, retry after a short delay.
+
+## 11. Where to Edit Key Logic
+
+- Backend entry: `backend/server.js`
+- Auth routes: `backend/routes/auth.js`
+- Jobs routes: `backend/routes/jobs.js`
+- Applications routes: `backend/routes/applications.js`
+- Messages routes: `backend/routes/messages.js`
+- AI fallback logic: `backend/utils/aiAnalyzer.js`
+- Frontend routes: `frontend/src/App.js`
+
+## 12. Related Docs
+
+- Main documentation: `README.md`
+- API key setup (Gemini + Groq): `API_KEY_SETUP.md`
