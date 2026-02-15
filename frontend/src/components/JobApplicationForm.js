@@ -6,19 +6,26 @@ import { FiX } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import './JobApplicationForm.css';
 
-const JobApplicationForm = ({ jobId, jobTitle, onSuccess }) => {
+const JobApplicationForm = ({ jobId, jobTitle, applicationFields = [], onSuccess }) => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     coverLetter: '',
     resume: null,
-    answers: []
+    answers: {}
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAnswerChange = (fieldName, value) => {
+    setFormData(prev => ({
+      ...prev,
+      answers: { ...prev.answers, [fieldName]: value }
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -42,6 +49,14 @@ const JobApplicationForm = ({ jobId, jobTitle, onSuccess }) => {
 
     if (!formData.resume) {
       toast.error('Please upload your resume');
+      return;
+    }
+
+    const missingRequired = applicationFields.find(
+      f => f.required && !formData.answers[f.fieldName]?.toString().trim()
+    );
+    if (missingRequired) {
+      toast.error(`Please fill in "${missingRequired.fieldName}"`);
       return;
     }
 
@@ -74,6 +89,13 @@ const JobApplicationForm = ({ jobId, jobTitle, onSuccess }) => {
       submitFormData.append('coverLetter', formData.coverLetter);
       submitFormData.append('resume', formData.resume);
 
+      if (applicationFields.length > 0) {
+        const answers = applicationFields
+          .filter(f => formData.answers[f.fieldName]?.toString().trim())
+          .map(f => ({ question: f.fieldName, answer: formData.answers[f.fieldName] }));
+        submitFormData.append('answers', JSON.stringify(answers));
+      }
+
       const { data } = await axios.post('applications', submitFormData);
 
       // #region agent log
@@ -103,7 +125,7 @@ const JobApplicationForm = ({ jobId, jobTitle, onSuccess }) => {
       setFormData({
         coverLetter: '',
         resume: null,
-        answers: []
+        answers: {}
       });
       // Reset file input
       const fileInput = document.getElementById('resume-upload');
@@ -193,6 +215,36 @@ const JobApplicationForm = ({ jobId, jobTitle, onSuccess }) => {
                   </div>
                   <p className="file-info">PDF, DOC, or DOCX (Max 10MB)</p>
                 </div>
+
+                {applicationFields.length > 0 && (
+                  <div className="custom-fields-section">
+                    <h4>Additional Information</h4>
+                    {applicationFields.map((field) => (
+                      <div className="form-group" key={field.fieldName}>
+                        <label>
+                          {field.fieldName} {field.required && '*'}
+                        </label>
+                        {field.fieldType === 'textarea' ? (
+                          <textarea
+                            value={formData.answers[field.fieldName] || ''}
+                            onChange={(e) => handleAnswerChange(field.fieldName, e.target.value)}
+                            placeholder={`Enter ${field.fieldName.toLowerCase()}`}
+                            rows="4"
+                            required={field.required}
+                          />
+                        ) : (
+                          <input
+                            type={field.fieldType || 'text'}
+                            value={formData.answers[field.fieldName] || ''}
+                            onChange={(e) => handleAnswerChange(field.fieldName, e.target.value)}
+                            placeholder={`Enter ${field.fieldName.toLowerCase()}`}
+                            required={field.required}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {user && (
                   <div className="user-info">

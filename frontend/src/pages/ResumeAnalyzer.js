@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -23,6 +23,18 @@ const ResumeAnalyzer = () => {
   const [jobError, setJobError] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
+
+  useEffect(() => {
+    if (jobId) {
+      axios.get(`jobs/${jobId}`)
+        .then(({ data }) => {
+          if (data.job?.description) {
+            setJobDescription(data.job.description);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [jobId]);
 
   const handleFileUpload = (e) => {
     setFileError('');

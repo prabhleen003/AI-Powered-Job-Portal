@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const { PdfReader } = require('pdfreader');
 const { protect } = require('../middleware/auth');
+const { checkAiLimit, getAiUsage } = require('../middleware/aiLimiter');
 const { generateCoverLetter } = require('../utils/aiAnalyzer'); // Unified AI with fallback
 
 // Configure multer for PDF uploads (same as resume.js)
@@ -18,10 +19,15 @@ const upload = multer({
   }
 });
 
+// @route   GET /api/cover-letter/usage
+// @desc    Get daily cover letter usage count
+// @access  Private
+router.get('/usage', protect, getAiUsage('coverLetter'));
+
 // @route   POST /api/cover-letter/generate
 // @desc    Generate cover letter from resume and job description
 // @access  Private
-router.post('/generate', protect, upload.single('resume'), async (req, res) => {
+router.post('/generate', protect, checkAiLimit('coverLetter'), upload.single('resume'), async (req, res) => {
   try {
     const { companyName, jobDescription } = req.body;
 

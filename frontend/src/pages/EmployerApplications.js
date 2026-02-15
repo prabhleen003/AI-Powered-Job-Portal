@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import DefaultAvatar from '../components/DefaultAvatar';
 import {
   FiArrowLeft, FiCheckCircle, FiXCircle, FiMessageSquare,
-  FiDownload, FiClock, FiUser, FiMail, FiFilter
+  FiDownload, FiClock, FiUser, FiMail, FiFilter, FiCalendar
 } from 'react-icons/fi';
 import './EmployerApplications.css';
 
@@ -97,6 +98,17 @@ const EmployerApplications = () => {
     } finally {
       setSendingMessage(false);
     }
+  };
+
+  const handleScheduleInterview = (app) => {
+    const applicantName = app.applicant?.name || 'Applicant';
+    const jobTitle = app.job?.title || 'the position';
+    const companyName = user?.company || user?.name || 'our team';
+
+    const template = `Hi ${applicantName},\n\nThank you for applying for the ${jobTitle} position. We were impressed by your resume and would love to learn more about your experience.\n\nWe'd like to schedule an interview with you at your earliest convenience. Please let us know your available dates and preferred time slots, and we'll do our best to accommodate.\n\nLooking forward to speaking with you!\n\nBest regards,\n${companyName}`;
+
+    setSelectedApp(app);
+    setMessageText(template);
   };
 
   const downloadResume = (resumeData, applicantName) => {
@@ -215,9 +227,10 @@ const EmployerApplications = () => {
               >
                 <div className="application-header">
                   <div className="applicant-info">
-                    <img 
-                      src={app.applicant?.avatar || 'https://via.placeholder.com/48'} 
+                    <DefaultAvatar
+                      src={app.applicant?.avatar}
                       alt={app.applicant?.name}
+                      size={48}
                       className="applicant-avatar"
                     />
                     <div className="applicant-details">
@@ -259,57 +272,46 @@ const EmployerApplications = () => {
                     <FiDownload /> Resume
                   </button>
 
-                  {/* Status-based action buttons */}
-                  {app.status === 'applied' && (
-                    <button
-                      className="action-btn review-btn"
-                      onClick={() => handleStatusChange(app._id, 'under_review')}
-                    >
-                      <FiCheckCircle /> Move to Review
-                    </button>
-                  )}
-
-                  {app.status === 'under_review' && (
+                  {/* Only show status actions for active applications */}
+                  {!['accepted', 'rejected', 'withdrawn'].includes(app.status) && (
                     <>
+                      <div className="status-actions">
+                        <span className="status-actions-label">Set Status:</span>
+                        <button
+                          className={`status-action-btn review ${app.status === 'under_review' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(app._id, 'under_review')}
+                          disabled={app.status === 'under_review'}
+                        >
+                          Under Review
+                        </button>
+                        <button
+                          className={`status-action-btn waitlist ${app.status === 'waitlist' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(app._id, 'waitlist')}
+                          disabled={app.status === 'waitlist'}
+                        >
+                          Waitlist
+                        </button>
+                        <button
+                          className={`status-action-btn accepted ${app.status === 'accepted' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(app._id, 'accepted')}
+                        >
+                          <FiCheckCircle /> Accept
+                        </button>
+                        <button
+                          className={`status-action-btn rejected ${app.status === 'rejected' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(app._id, 'rejected')}
+                        >
+                          <FiXCircle /> Reject
+                        </button>
+                      </div>
+
                       <button
-                        className="action-btn waitlist-btn"
-                        onClick={() => handleStatusChange(app._id, 'waitlist')}
+                        className="action-btn interview-btn"
+                        onClick={() => handleScheduleInterview(app)}
                       >
-                        <FiClock /> Waitlist
-                      </button>
-                      <button
-                        className="action-btn accept-btn"
-                        onClick={() => handleStatusChange(app._id, 'accepted')}
-                      >
-                        <FiCheckCircle /> Accept
+                        <FiCalendar /> Schedule Interview
                       </button>
                     </>
-                  )}
-
-                  {app.status === 'waitlist' && (
-                    <>
-                      <button
-                        className="action-btn review-btn"
-                        onClick={() => handleStatusChange(app._id, 'under_review')}
-                      >
-                        <FiCheckCircle /> Move to Review
-                      </button>
-                      <button
-                        className="action-btn accept-btn"
-                        onClick={() => handleStatusChange(app._id, 'accepted')}
-                      >
-                        <FiCheckCircle /> Accept
-                      </button>
-                    </>
-                  )}
-
-                  {app.status !== 'rejected' && app.status !== 'accepted' && (
-                    <button
-                      className="action-btn reject-btn"
-                      onClick={() => handleStatusChange(app._id, 'rejected')}
-                    >
-                      <FiXCircle /> Reject
-                    </button>
                   )}
 
                   <button

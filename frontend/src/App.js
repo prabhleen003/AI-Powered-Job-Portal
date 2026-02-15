@@ -25,9 +25,11 @@ import CoverLetterGenerator from './pages/CoverLetterGenerator';
 import PracticeTest from './pages/PracticeTest';
 import Experiences from './pages/Experiences';
 import MyJobs from './pages/MyJobs';
+import EditJob from './pages/EditJob';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
+import AuthSuccess from './pages/AuthSuccess';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -83,6 +85,7 @@ function AppContent() {
           <Route path="/experiences" element={<Experiences />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/cookies" element={<CookiePolicy />} />
@@ -109,6 +112,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <MyJobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-job/:jobId"
+            element={
+              <ProtectedRoute>
+                <EditJob />
               </ProtectedRoute>
             }
           />

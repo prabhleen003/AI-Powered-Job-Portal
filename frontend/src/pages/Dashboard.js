@@ -18,28 +18,6 @@ const Dashboard = () => {
     try {
       const { data } = await axios.get('applications');
       setApplications(data.applications);
-
-      // #region agent log
-      if (typeof fetch !== 'undefined') {
-        fetch('http://127.0.0.1:7242/ingest/0e7bbb6d-51ac-4f13-911d-de5f9a6bdf29', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: `log_${Date.now()}_DASHBOARD_FETCH_SUCCESS`,
-            runId: 'pre-fix-1',
-            hypothesisId: 'H4',
-            location: 'frontend/src/pages/Dashboard.js:17',
-            message: 'Dashboard fetched applications',
-            data: {
-              userId: user?._id,
-              role: user?.role,
-              count: data?.applications?.length || 0
-            },
-            timestamp: Date.now()
-          })
-        }).catch(() => {});
-      }
-      // #endregion
     } catch (error) {
       console.error('Error fetching applications:', error);
     } finally {
@@ -49,26 +27,38 @@ const Dashboard = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'pending': return <FiClock />;
-      case 'reviewing': return <FiClock />;
-      case 'shortlisted': return <FiCheckCircle />;
-      case 'interview': return <FiCheckCircle />;
-      case 'offered': return <FiCheckCircle />;
+      case 'applied': return <FiClock />;
+      case 'under_review': return <FiClock />;
+      case 'waitlist': return <FiBriefcase />;
+      case 'accepted': return <FiCheckCircle />;
       case 'rejected': return <FiXCircle />;
+      case 'withdrawn': return <FiXCircle />;
       default: return <FiBriefcase />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return '#F59E0B';
-      case 'reviewing': return '#3B82F6';
-      case 'shortlisted': return '#8B5CF6';
-      case 'interview': return '#10B981';
-      case 'offered': return '#10B981';
+      case 'applied': return '#F59E0B';
+      case 'under_review': return '#3B82F6';
+      case 'waitlist': return '#8B5CF6';
+      case 'accepted': return '#10B981';
       case 'rejected': return '#EF4444';
+      case 'withdrawn': return '#6B7280';
       default: return '#6B7280';
     }
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      'applied': 'Applied',
+      'under_review': 'Under Review',
+      'waitlist': 'Waitlist',
+      'accepted': 'Accepted',
+      'rejected': 'Rejected',
+      'withdrawn': 'Withdrawn'
+    };
+    return labels[status] || status;
   };
 
   const filteredApplications = filter === 'all'
@@ -91,13 +81,20 @@ const Dashboard = () => {
       </p>
 
       <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        {['all', 'pending', 'reviewing', 'interview', 'offered', 'rejected'].map(status => (
+        {[
+          { key: 'all', label: 'All' },
+          { key: 'applied', label: 'Applied' },
+          { key: 'under_review', label: 'Under Review' },
+          { key: 'waitlist', label: 'Waitlist' },
+          { key: 'accepted', label: 'Accepted' },
+          { key: 'rejected', label: 'Rejected' }
+        ].map(({ key, label }) => (
           <button
-            key={status}
-            className={`btn ${filter === status ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setFilter(status)}
+            key={key}
+            className={`btn ${filter === key ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setFilter(key)}
           >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+            {label}
           </button>
         ))}
       </div>
@@ -140,7 +137,7 @@ const Dashboard = () => {
                   fontSize: '0.875rem'
                 }}>
                   {getStatusIcon(app.status)}
-                  {app.status}
+                  {getStatusLabel(app.status)}
                 </div>
               </div>
             </motion.div>

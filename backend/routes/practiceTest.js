@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
+const { checkAiLimit, getAiUsage } = require('../middleware/aiLimiter');
 const { generateQuestions, evaluateAnswers } = require('../utils/aiAnalyzer');
+
+// @route   GET /api/practice-test/usage
+// @desc    Get daily practice test usage count
+// @access  Private
+router.get('/usage', protect, getAiUsage('practiceTest'));
 
 // @route   POST /api/practice-test/generate
 // @desc    Generate interview questions from job description
 // @access  Private
-router.post('/generate', protect, async (req, res) => {
+router.post('/generate', protect, checkAiLimit('practiceTest'), async (req, res) => {
   try {
     const { jobDescription } = req.body;
 

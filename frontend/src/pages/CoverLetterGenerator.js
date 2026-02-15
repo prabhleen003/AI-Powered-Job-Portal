@@ -24,6 +24,16 @@ const CoverLetterGenerator = () => {
   const [companyError, setCompanyError] = useState('');
   const [jobError, setJobError] = useState('');
   const [lastGeneratedTime, setLastGeneratedTime] = useState(null);
+  const [usage, setUsage] = useState(null);
+
+  const fetchUsage = async () => {
+    try {
+      const { data } = await axios.get('cover-letter/usage');
+      if (data.success) setUsage(data);
+    } catch {}
+  };
+
+  useEffect(() => { fetchUsage(); }, []);
 
   const handleFileUpload = (e) => {
     setFileError('');
@@ -139,6 +149,7 @@ const CoverLetterGenerator = () => {
 
       setCoverLetter(data);
       setLastGeneratedTime(Date.now());
+      fetchUsage();
       toast.success('Cover letter generated successfully!');
 
       // Smooth scroll to results
@@ -305,6 +316,20 @@ const CoverLetterGenerator = () => {
           <p className="header-subtitle">
             Generate professional, tailored cover letters in seconds using AI
           </p>
+          {usage && (
+            <div className="usage-counter" style={{
+              marginTop: '12px',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              background: usage.remaining === 0 ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
+              color: usage.remaining === 0 ? '#EF4444' : '#10B981',
+              fontSize: '14px',
+              fontWeight: '600',
+              display: 'inline-block'
+            }}>
+              {usage.remaining} / {usage.limit} generations remaining today
+            </div>
+          )}
         </motion.div>
 
         {!coverLetter ? (

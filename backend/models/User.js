@@ -84,6 +84,14 @@ const userSchema = new mongoose.Schema({
     size: String
   },
   
+  // AI Usage Limits
+  aiUsage: {
+    coverLetterCount: { type: Number, default: 0 },
+    coverLetterResetDate: { type: Date, default: Date.now },
+    practiceTestCount: { type: Number, default: 0 },
+    practiceTestResetDate: { type: Date, default: Date.now }
+  },
+
   // Status
   isVerified: {
     type: Boolean,

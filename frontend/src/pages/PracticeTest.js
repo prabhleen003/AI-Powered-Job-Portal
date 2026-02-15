@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -36,6 +36,18 @@ const PracticeTest = () => {
   // Report stage
   const [report, setReport] = useState(null);
 
+  // Usage tracking
+  const [usage, setUsage] = useState(null);
+
+  const fetchUsage = async () => {
+    try {
+      const { data } = await axios.get('practice-test/usage');
+      if (data.success) setUsage(data);
+    } catch {}
+  };
+
+  useEffect(() => { fetchUsage(); }, []);
+
   // Check browser speech support
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const speechSupported = !!SpeechRecognition;
@@ -63,6 +75,7 @@ const PracticeTest = () => {
         setQuestions(data.questions);
         setAnswers({});
         setStage('questions');
+        fetchUsage();
         toast.success('Questions generated successfully!');
       }
     } catch (error) {
@@ -241,6 +254,20 @@ const PracticeTest = () => {
           <p className="header-subtitle">
             Practice interview questions tailored to your target job and get AI-powered feedback
           </p>
+          {usage && (
+            <div className="usage-counter" style={{
+              marginTop: '12px',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              background: usage.remaining === 0 ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
+              color: usage.remaining === 0 ? '#EF4444' : '#10B981',
+              fontSize: '14px',
+              fontWeight: '600',
+              display: 'inline-block'
+            }}>
+              {usage.remaining} / {usage.limit} tests remaining today
+            </div>
+          )}
 
           {/* Progress Steps */}
           <div className="progress-steps">

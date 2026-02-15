@@ -95,9 +95,10 @@ const JobDetails = () => {
 
           <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
             {isAuthenticated && user?.role === 'jobseeker' ? (
-              <JobApplicationForm 
-                jobId={job._id} 
+              <JobApplicationForm
+                jobId={job._id}
                 jobTitle={job.title}
+                applicationFields={job.applicationFields || []}
                 onSuccess={fetchJob}
               />
             ) : (

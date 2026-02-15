@@ -238,9 +238,9 @@
 /* Application Actions */
 .application-actions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   padding: 20px 24px;
-  flex-wrap: wrap;
 }
 
 .action-btn {
@@ -264,6 +264,7 @@
 }
 
 .resume-btn {
+  align-self: flex-start;
   background: var(--gray-100);
   color: var(--gray-700);
   border: 1px solid var(--gray-300);
@@ -274,15 +275,109 @@
   border-color: var(--gray-400);
 }
 
-.shortlist-btn {
-  background: var(--primary-ultra-light);
-  color: var(--primary);
-  border: 1px solid var(--primary);
+/* Status Actions Row */
+.status-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.shortlist-btn:hover:not(:disabled) {
-  background: var(--primary);
+.status-actions-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-right: 4px;
+}
+
+.status-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: var(--font-body);
+  border: 2px solid;
+}
+
+.status-action-btn:disabled {
+  cursor: default;
+}
+
+.status-action-btn.review {
+  border-color: #3B82F6;
+  background: transparent;
+  color: #3B82F6;
+}
+
+.status-action-btn.review:hover:not(:disabled) {
+  background: #3B82F6;
   color: #ffffff;
+}
+
+.status-action-btn.review.active {
+  background: #3B82F6;
+  color: #ffffff;
+}
+
+.status-action-btn.waitlist {
+  border-color: #8B5CF6;
+  background: transparent;
+  color: #8B5CF6;
+}
+
+.status-action-btn.waitlist:hover:not(:disabled) {
+  background: #8B5CF6;
+  color: #ffffff;
+}
+
+.status-action-btn.waitlist.active {
+  background: #8B5CF6;
+  color: #ffffff;
+}
+
+.status-action-btn.accepted {
+  border-color: #10B981;
+  background: transparent;
+  color: #10B981;
+}
+
+.status-action-btn.accepted:hover:not(:disabled) {
+  background: #10B981;
+  color: #ffffff;
+}
+
+.status-action-btn.accepted.active {
+  background: #10B981;
+  color: #ffffff;
+}
+
+.status-action-btn.rejected {
+  border-color: #EF4444;
+  background: transparent;
+  color: #EF4444;
+}
+
+.status-action-btn.rejected:hover:not(:disabled) {
+  background: #EF4444;
+  color: #ffffff;
+}
+
+.status-action-btn.rejected.active {
+  background: #EF4444;
+  color: #ffffff;
+}
+
+/* Communication Actions Row */
+.comm-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .interview-btn {
@@ -296,33 +391,10 @@
   color: #ffffff;
 }
 
-.offer-btn {
-  background: rgba(5, 150, 105, 0.1);
-  color: #059669;
-  border: 1px solid #059669;
-}
-
-.offer-btn:hover:not(:disabled) {
-  background: #059669;
-  color: #ffffff;
-}
-
-.reject-btn {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
-  border: 1px solid var(--error);
-}
-
-.reject-btn:hover:not(:disabled) {
-  background: var(--error);
-  color: #ffffff;
-}
-
 .message-btn {
   background: var(--primary-ultra-light);
   color: var(--primary);
   border: 1px solid var(--primary);
-  margin-left: auto;
 }
 
 .message-btn:hover:not(:disabled) {
@@ -479,17 +551,25 @@
     align-items: flex-start;
   }
 
-  .application-actions {
+  .status-actions {
+    flex-wrap: wrap;
+  }
+
+  .status-action-btn {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  .comm-actions {
     flex-direction: column;
   }
 
-  .action-btn {
+  .comm-actions .action-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .message-btn {
-    margin-left: 0;
   }
 
   .page-header h1 {

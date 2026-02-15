@@ -12,6 +12,7 @@ import {
   FiChevronLeft,
   FiCheck
 } from 'react-icons/fi';
+import DefaultAvatar from '../components/DefaultAvatar';
 import './Messages.css';
 
 const Messages = () => {
@@ -252,9 +253,10 @@ const Messages = () => {
                     className="user-search-item"
                     onClick={() => selectUserFromSearch(foundUser)}
                   >
-                    <img
-                      src={foundUser.avatar || 'https://via.placeholder.com/40'}
+                    <DefaultAvatar
+                      src={foundUser.avatar}
                       alt={foundUser.name}
+                      size={40}
                       className="user-avatar-small"
                     />
                     <div className="user-info">
@@ -290,9 +292,10 @@ const Messages = () => {
                   whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.1)' }}
                 >
                   <div className="conversation-avatar-wrapper">
-                    <img
-                      src={conv.user.avatar || 'https://via.placeholder.com/48'}
+                    <DefaultAvatar
+                      src={conv.user.avatar}
                       alt={conv.user.name}
+                      size={48}
                       className="conversation-avatar"
                     />
                     {isUserOnline(conv.user._id) && (
@@ -346,9 +349,10 @@ const Messages = () => {
                     <FiChevronLeft size={20} />
                   </button>
                   <div className="chat-user-info">
-                    <img
-                      src={selectedConversation.avatar || 'https://via.placeholder.com/40'}
+                    <DefaultAvatar
+                      src={selectedConversation.avatar}
                       alt={selectedConversation.name}
+                      size={40}
                       className="chat-avatar"
                     />
                     <div>
@@ -384,9 +388,10 @@ const Messages = () => {
                         transition={{ duration: 0.2 }}
                       >
                         {!isOwnMessage && (
-                          <img
-                            src={msg.sender.avatar || 'https://via.placeholder.com/32'}
+                          <DefaultAvatar
+                            src={msg.sender.avatar}
                             alt={msg.sender.name}
+                            size={32}
                             className="message-avatar"
                           />
                         )}

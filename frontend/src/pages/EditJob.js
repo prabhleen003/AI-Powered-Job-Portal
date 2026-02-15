@@ -16,6 +16,7 @@ const EditJob = () => {
   const [requirements, setRequirements] = useState(['']);
   const [responsibilities, setResponsibilities] = useState(['']);
   const [skills, setSkills] = useState(['']);
+  const [applicationFields, setApplicationFields] = useState([]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -59,14 +60,12 @@ const EditJob = () => {
       const { data } = await axios.get(`/jobs/${jobId}`);
       const job = data.job;
 
-      // Check if user is the owner of this job
       if (job.employer._id !== user._id) {
         toast.error('You are not authorized to edit this job');
         navigate('/my-jobs');
         return;
       }
 
-      // Set form data with existing job data
       setFormData({
         title: job.title || '',
         company: job.company || user?.company || '',
@@ -94,6 +93,7 @@ const EditJob = () => {
       setRequirements(job.requirements?.length > 0 ? job.requirements : ['']);
       setResponsibilities(job.responsibilities?.length > 0 ? job.responsibilities : ['']);
       setSkills(job.skills?.length > 0 ? job.skills : ['']);
+      setApplicationFields(job.applicationFields?.length > 0 ? job.applicationFields : []);
     } catch (error) {
       console.error('Error fetching job:', error);
       toast.error('Failed to load job details');
@@ -162,10 +162,24 @@ const EditJob = () => {
     }
   };
 
+  // Application Fields handlers
+  const addApplicationField = () => {
+    setApplicationFields([...applicationFields, { fieldName: '', fieldType: 'text', required: false }]);
+  };
+
+  const updateApplicationField = (index, key, value) => {
+    const updated = [...applicationFields];
+    updated[index] = { ...updated[index], [key]: value };
+    setApplicationFields(updated);
+  };
+
+  const removeApplicationField = (index) => {
+    setApplicationFields(applicationFields.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (!formData.title || !formData.description) {
       toast.error('Please fill in required fields');
       return;
@@ -177,7 +191,8 @@ const EditJob = () => {
         ...formData,
         requirements: requirements.filter(r => r.trim()),
         responsibilities: responsibilities.filter(r => r.trim()),
-        skills: skills.filter(s => s.trim())
+        skills: skills.filter(s => s.trim()),
+        applicationFields: applicationFields.filter(f => f.fieldName.trim())
       };
 
       await axios.put(`/jobs/${jobId}`, jobData);
@@ -217,60 +232,178 @@ const EditJob = () => {
           className="post-job-container"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          <h1>Edit Job Posting</h1>
-          <p className="subtitle">Update your job posting details</p>
+          <div className="post-job-header">
+            <h1>Edit Job Posting</h1>
+            <p>Update your job posting details</p>
+          </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Basic Information */}
-            <div className="form-section">
-              <h2>Basic Information</h2>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Job Title *</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Senior Software Engineer"
-                    required
-                  />
-                </div>
+          <form onSubmit={handleSubmit} className="post-job-form">
+            {/* Basic Details Section */}
+            <section className="form-section">
+              <h2>Job Details</h2>
 
+              <div className="form-group">
+                <label>Job Title *</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Senior React Developer"
+                  required
+                />
+              </div>
+
+              <div className="form-row">
                 <div className="form-group">
-                  <label>Company Name *</label>
+                  <label>Company *</label>
                   <input
                     type="text"
                     name="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    placeholder="Your company name"
+                    placeholder="Company name"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Category *</label>
+                  <label>Category</label>
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    required
                   >
                     {categories.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
                 </div>
+              </div>
 
+              <div className="form-group">
+                <label>Job Description *</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  placeholder="Describe the job role, main responsibilities, and expectations"
+                  rows="6"
+                  required
+                />
+              </div>
+            </section>
+
+            {/* Details Lists */}
+            <section className="form-section">
+              <h2>Requirements</h2>
+              <div className="list-items">
+                {requirements.map((req, index) => (
+                  <div key={index} className="list-item">
+                    <input
+                      type="text"
+                      value={req}
+                      onChange={(e) => updateItem('requirement', index, e.target.value)}
+                      placeholder="e.g., 5+ years of experience"
+                    />
+                    {requirements.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-remove"
+                        onClick={() => removeItem('requirement', index)}
+                      >
+                        <FiX />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="btn-add"
+                onClick={() => addItem('requirement')}
+              >
+                <FiPlus /> Add Requirement
+              </button>
+            </section>
+
+            <section className="form-section">
+              <h2>Responsibilities</h2>
+              <div className="list-items">
+                {responsibilities.map((resp, index) => (
+                  <div key={index} className="list-item">
+                    <input
+                      type="text"
+                      value={resp}
+                      onChange={(e) => updateItem('responsibility', index, e.target.value)}
+                      placeholder="e.g., Build scalable backend services"
+                    />
+                    {responsibilities.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-remove"
+                        onClick={() => removeItem('responsibility', index)}
+                      >
+                        <FiX />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="btn-add"
+                onClick={() => addItem('responsibility')}
+              >
+                <FiPlus /> Add Responsibility
+              </button>
+            </section>
+
+            <section className="form-section">
+              <h2>Required Skills</h2>
+              <div className="list-items">
+                {skills.map((skill, index) => (
+                  <div key={index} className="list-item">
+                    <input
+                      type="text"
+                      value={skill}
+                      onChange={(e) => updateItem('skill', index, e.target.value)}
+                      placeholder="e.g., React, Node.js, MongoDB"
+                    />
+                    {skills.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn-remove"
+                        onClick={() => removeItem('skill', index)}
+                      >
+                        <FiX />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="btn-add"
+                onClick={() => addItem('skill')}
+              >
+                <FiPlus /> Add Skill
+              </button>
+            </section>
+
+            {/* Employment Details */}
+            <section className="form-section">
+              <h2>Employment Details</h2>
+
+              <div className="form-row">
                 <div className="form-group">
-                  <label>Employment Type *</label>
+                  <label>Employment Type</label>
                   <select
                     name="employmentType"
                     value={formData.employmentType}
                     onChange={handleInputChange}
-                    required
                   >
                     {employmentTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -279,47 +412,25 @@ const EditJob = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Experience Level *</label>
+                  <label>Experience Level</label>
                   <select
                     name="experienceLevel"
                     value={formData.experienceLevel}
                     onChange={handleInputChange}
-                    required
                   >
                     {experienceLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
                     ))}
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label>Application Deadline</label>
-                  <input
-                    type="date"
-                    name="applicationDeadline"
-                    value={formData.applicationDeadline}
-                    onChange={handleInputChange}
-                  />
-                </div>
               </div>
-
-              <div className="form-group full-width">
-                <label>Job Description *</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="8"
-                  placeholder="Describe the role, what the candidate will do, and what makes this opportunity great..."
-                  required
-                />
-              </div>
-            </div>
+            </section>
 
             {/* Location */}
-            <div className="form-section">
+            <section className="form-section">
               <h2>Location</h2>
-              <div className="form-grid">
+
+              <div className="form-row three-col">
                 <div className="form-group">
                   <label>City</label>
                   <input
@@ -327,18 +438,18 @@ const EditJob = () => {
                     name="location.city"
                     value={formData.location.city}
                     onChange={handleInputChange}
-                    placeholder="e.g., San Francisco"
+                    placeholder="City"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>State/Province</label>
+                  <label>State</label>
                   <input
                     type="text"
                     name="location.state"
                     value={formData.location.state}
                     onChange={handleInputChange}
-                    placeholder="e.g., California"
+                    placeholder="State"
                   />
                 </div>
 
@@ -349,38 +460,38 @@ const EditJob = () => {
                     name="location.country"
                     value={formData.location.country}
                     onChange={handleInputChange}
-                    placeholder="e.g., USA"
+                    placeholder="Country"
                   />
                 </div>
               </div>
 
               <div className="checkbox-group">
-                <label className="checkbox-label">
+                <label>
                   <input
                     type="checkbox"
                     name="remote"
                     checked={formData.location.remote}
                     onChange={handleLocationCheckbox}
                   />
-                  <span>Remote Position</span>
+                  Remote
                 </label>
-
-                <label className="checkbox-label">
+                <label>
                   <input
                     type="checkbox"
                     name="hybrid"
                     checked={formData.location.hybrid}
                     onChange={handleLocationCheckbox}
                   />
-                  <span>Hybrid Work</span>
+                  Hybrid
                 </label>
               </div>
-            </div>
+            </section>
 
             {/* Salary */}
-            <div className="form-section">
-              <h2>Salary Range</h2>
-              <div className="form-grid">
+            <section className="form-section">
+              <h2>Salary Information</h2>
+
+              <div className="form-row four-col">
                 <div className="form-group">
                   <label>Minimum Salary</label>
                   <input
@@ -388,7 +499,7 @@ const EditJob = () => {
                     name="salary.min"
                     value={formData.salary.min}
                     onChange={handleInputChange}
-                    placeholder="e.g., 80000"
+                    placeholder="0"
                   />
                 </div>
 
@@ -399,7 +510,7 @@ const EditJob = () => {
                     name="salary.max"
                     value={formData.salary.max}
                     onChange={handleInputChange}
-                    placeholder="e.g., 120000"
+                    placeholder="0"
                   />
                 </div>
 
@@ -413,7 +524,6 @@ const EditJob = () => {
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
-                    <option value="CAD">CAD</option>
                     <option value="INR">INR</option>
                   </select>
                 </div>
@@ -425,134 +535,106 @@ const EditJob = () => {
                     value={formData.salary.period}
                     onChange={handleInputChange}
                   >
-                    <option value="yearly">Yearly</option>
-                    <option value="monthly">Monthly</option>
                     <option value="hourly">Hourly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
                   </select>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Requirements */}
-            <div className="form-section">
-              <div className="section-header">
-                <h2>Requirements</h2>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => addItem('requirement')}
-                >
-                  <FiPlus /> Add Requirement
-                </button>
+            {/* Timeline */}
+            <section className="form-section">
+              <h2>Timeline</h2>
+
+              <div className="form-group">
+                <label>Application Deadline</label>
+                <input
+                  type="date"
+                  name="applicationDeadline"
+                  value={formData.applicationDeadline}
+                  onChange={handleInputChange}
+                />
               </div>
+            </section>
+
+            {/* Application Form Builder */}
+            <section className="form-section">
+              <h2>Application Form</h2>
+
+              <div className="app-fields-info">
+                <p><strong>Resume</strong> and <strong>Cover Letter</strong> uploads are always included by default.</p>
+                <p>Add extra fields below that applicants must fill when applying.</p>
+              </div>
+
               <div className="list-items">
-                {requirements.map((req, index) => (
-                  <div key={index} className="list-item">
-                    <input
-                      type="text"
-                      value={req}
-                      onChange={(e) => updateItem('requirement', index, e.target.value)}
-                      placeholder="e.g., 5+ years of React experience"
-                    />
-                    {requirements.length > 1 && (
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => removeItem('requirement', index)}
+                {applicationFields.map((field, index) => (
+                  <div key={index} className="app-field-item">
+                    <div className="app-field-name">
+                      <label>Field Name</label>
+                      <input
+                        type="text"
+                        value={field.fieldName}
+                        onChange={(e) => updateApplicationField(index, 'fieldName', e.target.value)}
+                        placeholder="e.g., Portfolio URL, Years of Experience"
+                      />
+                    </div>
+                    <div className="app-field-type">
+                      <label>Type</label>
+                      <select
+                        value={field.fieldType}
+                        onChange={(e) => updateApplicationField(index, 'fieldType', e.target.value)}
                       >
-                        <FiX />
-                      </button>
-                    )}
+                        <option value="text">Text</option>
+                        <option value="textarea">Long Text</option>
+                        <option value="url">URL</option>
+                        <option value="number">Number</option>
+                        <option value="date">Date</option>
+                      </select>
+                    </div>
+                    <label className="app-field-required">
+                      <input
+                        type="checkbox"
+                        checked={field.required}
+                        onChange={(e) => updateApplicationField(index, 'required', e.target.checked)}
+                      />
+                      Required
+                    </label>
+                    <button
+                      type="button"
+                      className="app-field-remove"
+                      onClick={() => removeApplicationField(index)}
+                    >
+                      <FiX />
+                    </button>
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* Responsibilities */}
-            <div className="form-section">
-              <div className="section-header">
-                <h2>Responsibilities</h2>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => addItem('responsibility')}
-                >
-                  <FiPlus /> Add Responsibility
-                </button>
-              </div>
-              <div className="list-items">
-                {responsibilities.map((resp, index) => (
-                  <div key={index} className="list-item">
-                    <input
-                      type="text"
-                      value={resp}
-                      onChange={(e) => updateItem('responsibility', index, e.target.value)}
-                      placeholder="e.g., Lead frontend development initiatives"
-                    />
-                    {responsibilities.length > 1 && (
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => removeItem('responsibility', index)}
-                      >
-                        <FiX />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Skills */}
-            <div className="form-section">
-              <div className="section-header">
-                <h2>Required Skills</h2>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => addItem('skill')}
-                >
-                  <FiPlus /> Add Skill
-                </button>
-              </div>
-              <div className="list-items">
-                {skills.map((skill, index) => (
-                  <div key={index} className="list-item">
-                    <input
-                      type="text"
-                      value={skill}
-                      onChange={(e) => updateItem('skill', index, e.target.value)}
-                      placeholder="e.g., React, Node.js, TypeScript"
-                    />
-                    {skills.length > 1 && (
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => removeItem('skill', index)}
-                      >
-                        <FiX />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+              <button
+                type="button"
+                className="btn-add"
+                onClick={addApplicationField}
+              >
+                <FiPlus /> Add Custom Field
+              </button>
+            </section>
 
             {/* Submit Button */}
             <div className="form-actions">
               <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => navigate('/my-jobs')}
-              >
-                Cancel
-              </button>
-              <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-primary btn-lg"
                 disabled={loading}
               >
                 {loading ? 'Updating...' : 'Update Job'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-lg"
+                onClick={() => navigate('/my-jobs')}
+              >
+                Cancel
               </button>
             </div>
           </form>

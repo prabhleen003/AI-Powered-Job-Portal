@@ -19,6 +19,7 @@ import {
   FiAward,
   FiBook
 } from 'react-icons/fi';
+import DefaultAvatar from '../components/DefaultAvatar';
 import './Profile.css';
 
 const Profile = () => {
@@ -241,17 +242,12 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-header card">
         <div className="profile-avatar-section">
-          {avatarPreview || user?.avatar ? (
-            <img
-              src={avatarPreview || user?.avatar}
-              alt={user?.name}
-              className="profile-avatar"
-            />
-          ) : (
-            <div className="profile-avatar-placeholder">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-          )}
+          <DefaultAvatar
+            src={avatarPreview || user?.avatar}
+            alt={user?.name}
+            size={120}
+            className="profile-avatar"
+          />
           <h1 className="profile-name">{user?.name}</h1>
           <p className="profile-role">{user?.role}</p>
         </div>
@@ -373,11 +369,12 @@ const Profile = () => {
       <div className="card form-section">
         <h2 className="section-title"><FiUser /> Profile Picture</h2>
         <div className="avatar-upload-area">
-          {avatarPreview ? (
-            <img src={avatarPreview} alt="Preview" className="avatar-preview" />
-          ) : (
-            <div className="avatar-placeholder">{user?.name?.charAt(0).toUpperCase()}</div>
-          )}
+          <DefaultAvatar
+            src={avatarPreview}
+            alt={user?.name}
+            size={100}
+            className="avatar-preview"
+          />
           <div className="avatar-actions">
             <label className="btn btn-secondary">
               <FiUpload /> {avatarPreview ? 'Change' : 'Upload'} Picture
