@@ -8,7 +8,6 @@ import {
   FiSend,
   FiSearch,
   FiMessageCircle,
-  FiX,
   FiChevronLeft,
   FiCheck
 } from 'react-icons/fi';

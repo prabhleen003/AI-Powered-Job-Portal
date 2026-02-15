@@ -387,6 +387,7 @@
 .cta-buttons .btn-primary {
   background: var(--white);
   color: var(--primary);
+  -webkit-text-fill-color: var(--primary);
 }
 
 .cta-buttons .btn-primary:hover {

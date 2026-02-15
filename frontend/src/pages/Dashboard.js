@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { FiClock, FiCheckCircle, FiXCircle, FiBriefcase } from 'react-icons/fi';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  useAuth();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');

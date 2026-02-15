@@ -52,6 +52,7 @@ const EditJob = () => {
 
   useEffect(() => {
     fetchJob();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
 
   const fetchJob = async () => {

@@ -333,7 +333,9 @@
 
 .fj-checkbox-label input[type="checkbox"] {
   width: 18px;
+  min-width: 18px;
   height: 18px;
+  padding: 0;
   cursor: pointer;
   accent-color: var(--primary);
 }

@@ -6,8 +6,8 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import JobApplicationForm from '../components/JobApplicationForm';
 import {
-  FiMapPin, FiBriefcase, FiClock, FiDollarSign,
-  FiCalendar, FiUsers, FiArrowRight, FiTarget
+  FiMapPin, FiBriefcase, FiClock,
+  FiUsers, FiArrowRight, FiTarget
 } from 'react-icons/fi';
 
 const JobDetails = () => {
@@ -19,6 +19,7 @@ const JobDetails = () => {
 
   useEffect(() => {
     fetchJob();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchJob = async () => {

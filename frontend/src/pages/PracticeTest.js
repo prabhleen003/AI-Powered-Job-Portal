@@ -18,7 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import './PracticeTest.css';
 
 const PracticeTest = () => {
-  const { user } = useAuth();
+  useAuth();
 
   // Stage: 'input' | 'questions' | 'report'
   const [stage, setStage] = useState('input');

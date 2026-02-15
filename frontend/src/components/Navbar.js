@@ -150,6 +150,10 @@ const Navbar = () => {
                   <>
                     {user?.role === 'employer' ? (
                       <>
+                        <Link to="/dashboard" className="sidebar-link" onClick={() => setIsOpen(false)}>
+                          <FiStar className="sidebar-icon" />
+                          Dashboard
+                        </Link>
                         <Link to="/post-job" className="sidebar-link" onClick={() => setIsOpen(false)}>
                           <FiBriefcase className="sidebar-icon" />
                           Post Job
@@ -164,22 +168,24 @@ const Navbar = () => {
                         </Link>
                       </>
                     ) : (
-                      <Link to="/dashboard" className="sidebar-link" onClick={() => setIsOpen(false)}>
-                        <FiCheckCircle className="sidebar-icon" />
-                        Track Applications
-                      </Link>
+                      <>
+                        <Link to="/dashboard" className="sidebar-link" onClick={() => setIsOpen(false)}>
+                          <FiCheckCircle className="sidebar-icon" />
+                          Track Applications
+                        </Link>
+                        <Link to="/cover-letter-generator" className="sidebar-link" onClick={() => setIsOpen(false)}>
+                          <FiFileText className="sidebar-icon" />
+                          Cover Letter Generator
+                        </Link>
+                        <Link to="/practice-test" className="sidebar-link" onClick={() => setIsOpen(false)}>
+                          <FiStar className="sidebar-icon" />
+                          Practice Test
+                        </Link>
+                      </>
                     )}
                     <Link to="/resume-analyzer" className="sidebar-link" onClick={() => setIsOpen(false)}>
                       <FiUser className="sidebar-icon" />
                       AI Resume
-                    </Link>
-                    <Link to="/cover-letter-generator" className="sidebar-link" onClick={() => setIsOpen(false)}>
-                      <FiFileText className="sidebar-icon" />
-                      Cover Letter Generator
-                    </Link>
-                    <Link to="/practice-test" className="sidebar-link" onClick={() => setIsOpen(false)}>
-                      <FiStar className="sidebar-icon" />
-                      Practice Test
                     </Link>
                     <Link to="/messages" className="sidebar-link" onClick={() => setIsOpen(false)}>
                       <FiMessageSquare className="sidebar-icon" />

@@ -4,13 +4,13 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import {
-  FiSearch, FiFilter, FiPlusCircle, FiThumbsUp, FiMapPin,
-  FiBriefcase, FiCalendar, FiStar, FiX, FiCheckCircle
+  FiSearch, FiPlusCircle, FiThumbsUp, FiMapPin,
+  FiBriefcase, FiCalendar, FiStar, FiX
 } from 'react-icons/fi';
 import './Experiences.css';
 
 const Experiences = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [experiences, setExperiences] = useState([]);
   const [filteredExperiences, setFilteredExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +53,7 @@ const Experiences = () => {
 
   useEffect(() => {
     applyFilters();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyFilter, locationFilter, roleFilter, yearFilter, experiences]);
 
   const fetchExperiences = async () => {
@@ -129,7 +130,7 @@ const Experiences = () => {
 
     setSubmitting(true);
     try {
-      const { data } = await axios.post('/experiences', {
+      await axios.post('/experiences', {
         company: formData.company,
         location: {
           city: formData.city,

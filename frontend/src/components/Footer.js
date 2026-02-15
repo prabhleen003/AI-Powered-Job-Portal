@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBriefcase, FiGithub, FiTwitter, FiLinkedin, FiMail } from 'react-icons/fi';
+import { FiBriefcase, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
 import './Footer.css';
 
 const Footer = () => {
@@ -22,16 +22,13 @@ const Footer = () => {
               Your gateway to amazing career opportunities. Connect with top employers and find your dream job.
             </p>
             <div className="social-links">
-              <a href="#" className="social-link" aria-label="Twitter">
-                <FiTwitter />
-              </a>
-              <a href="#" className="social-link" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/prabhleen-kaur-586833302" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="LinkedIn">
                 <FiLinkedin />
               </a>
-              <a href="#" className="social-link" aria-label="GitHub">
+              <a href="https://github.com/prabhleen003/AI-Powered-Job-Portal" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="GitHub">
                 <FiGithub />
               </a>
-              <a href="#" className="social-link" aria-label="Email">
+              <a href="mailto:prabhleen6003@gmail.edu" className="social-link" aria-label="Email">
                 <FiMail />
               </a>
             </div>

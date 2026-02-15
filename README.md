@@ -1082,7 +1082,7 @@ socket.on('error', (error) => {
   }],
   
   // Status Tracking
-  status: String (enum: ['pending', 'reviewed', 'shortlisted', 'rejected', 'accepted']),
+  status: String (enum: ['applied', 'under_review', 'waitlist', 'accepted', 'rejected', 'withdrawn']),
   statusUpdates: [{
     status: String,
     updatedBy: ObjectId (ref: 'User'),
@@ -1335,28 +1335,26 @@ Real-time features not working
 
 ## 🚧 Known Issues
 
+### Recently Resolved
+
+1. **Edit Job Route Registration**
+   - Route now exists in frontend routing: `/edit-job/:jobId`
+
+2. **Google OAuth Success Route**
+   - Frontend route now exists: `/auth/success`
+   - Backend redirect flow now lands on an implemented page
+
+3. **Application Status Label Alignment**
+   - Frontend dashboard labels now match backend status values (`applied`, `under_review`, `waitlist`, `accepted`, `rejected`, `withdrawn`)
+
 ### Current Limitations
 
-1. **📝 Edit Job Route Not Registered**
-   - `EditJob.js` component exists but route `/edit-job/:id` not in `App.js`
-   - **Workaround:** Add route manually or use API directly
-
-2. **🔐 Google OAuth Success Route Missing**
-   - Backend redirects to `/auth/success?token=...`
-   - Frontend doesn't have this route defined
-   - **Workaround:** Create success handler component
-
-3. **📊 Status Label Mismatch**
-   - Frontend dashboard uses different status names than backend
-   - **Impact:** Display inconsistency in application status
-   - **Workaround:** Normalize status labels
-
-4. **🔍 Debug Fetch Calls**
+1. **Debug Fetch Calls**
    - Some files contain `fetch('http://127.0.0.1:7242/...')` calls
    - These fail silently if endpoint unavailable
    - **Impact:** None (wrapped in `.catch(() => {})`)
 
-5. **💾 File Storage**
+2. **File Storage**
    - Files stored as base64 in MongoDB
    - **Limitation:** Not scalable for large files
    - **Future:** Migrate to cloud storage (S3, Cloudinary)
@@ -1493,3 +1491,4 @@ Made with ❤️ by [Prabhleen Kaur]
 [⬆ Back to Top](#-ai-powered-job-portal)
 
 </div>
+

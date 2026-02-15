@@ -49,6 +49,9 @@
   margin-bottom: 32px;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--primary-light);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .filter-group {

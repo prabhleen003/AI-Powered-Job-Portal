@@ -18,6 +18,7 @@ import EmployerApplications from './pages/EmployerApplications';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import EmployerDashboard from './pages/EmployerDashboard';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
@@ -30,6 +31,12 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import AuthSuccess from './pages/AuthSuccess';
+
+// Role-based Dashboard
+const DashboardRouter = () => {
+  const { user } = useAuth();
+  return user?.role === 'employer' ? <EmployerDashboard /> : <Dashboard />;
+};
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -123,13 +130,13 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <DashboardRouter />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route 
             path="/messages" 

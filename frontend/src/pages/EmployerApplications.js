@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import DefaultAvatar from '../components/DefaultAvatar';
 import {
   FiArrowLeft, FiCheckCircle, FiXCircle, FiMessageSquare,
-  FiDownload, FiClock, FiUser, FiMail, FiFilter, FiCalendar
+  FiDownload, FiClock, FiMail, FiFilter, FiCalendar
 } from 'react-icons/fi';
 import './EmployerApplications.css';
 

@@ -269,9 +269,10 @@
   font-family: var(--font-body);
 }
 
-.btn-primary {
+.experiences-page .btn-primary {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
   box-shadow: var(--shadow);
 }
 
