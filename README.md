@@ -28,10 +28,8 @@
 - [📡 API Reference](#-api-reference)
 - [🔌 WebSocket Events](#-websocket-events)
 - [📊 Data Models](#-data-models)
-- [🎨 UI Preview](#-ui-preview)
 - [🧪 Testing](#-testing)
 - [🐛 Troubleshooting](#-troubleshooting)
-- [🚧 Known Issues](#-known-issues)
 - [🤝 Future Work & Collaboration](#-future-work--collaboration)
 
 ---
@@ -1332,32 +1330,6 @@ Real-time features not working
 </details>
 
 ---
-
-## 🚧 Known Issues
-
-### Recently Resolved
-
-1. **Edit Job Route Registration**
-   - Route now exists in frontend routing: `/edit-job/:jobId`
-
-2. **Google OAuth Success Route**
-   - Frontend route now exists: `/auth/success`
-   - Backend redirect flow now lands on an implemented page
-
-3. **Application Status Label Alignment**
-   - Frontend dashboard labels now match backend status values (`applied`, `under_review`, `waitlist`, `accepted`, `rejected`, `withdrawn`)
-
-### Current Limitations
-
-1. **Debug Fetch Calls**
-   - Some files contain `fetch('http://127.0.0.1:7242/...')` calls
-   - These fail silently if endpoint unavailable
-   - **Impact:** None (wrapped in `.catch(() => {})`)
-
-2. **File Storage**
-   - Files stored as base64 in MongoDB
-   - **Limitation:** Not scalable for large files
-   - **Future:** Migrate to cloud storage (S3, Cloudinary)
 
 ### Roadmap
 
